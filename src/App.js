@@ -21,15 +21,13 @@ export default class App extends Lightning.Component {
         Router.startRouter({
             appInstance: this, provider, routes
         });
+        Router.navigate("splash")
     }
 
     static _template() {
         return {
             Pages: {
-                forceZIndexContext: true, w: 1000
-            },
-            Splash:{
-               type: Splash
+                forceZIndexContext: true, w: 1000,
             },
             Widgets: {
                 Menu:{
@@ -52,13 +50,6 @@ export default class App extends Lightning.Component {
         // call
     }
 
-    _getFocused(){
-        return this.tag("Splash")
-    }
-
-    _handleLeft(){
-        this.setIndex(this.index - 1);
-    }
 
      static _states() {
         return [
@@ -101,7 +92,8 @@ export default class App extends Lightning.Component {
     }
 
     _getFocused() {
-        return Router.getActivePage();
+      const page = Router.getActivePage()
+      return Router.getActivePage();
     }
 
 }

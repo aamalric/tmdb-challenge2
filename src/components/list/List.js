@@ -1,5 +1,7 @@
 import {Lightning} from "wpe-lightning-sdk";
 
+import Item from "../item/Item"
+
 export default class List extends Lightning.Component {
     static _template() {
         return {
@@ -7,7 +9,10 @@ export default class List extends Lightning.Component {
                 text: {text: '', fontFace: 'Magra'}
             },
             Movies: {
-                y: 75
+              transitions: {
+                x: { duration: 0.5, timingFunction: 'linear' },
+              },
+              y: 75,
             }
         }
     }
@@ -17,45 +22,52 @@ export default class List extends Lightning.Component {
     }
 
     _handleLeft() {
-        // @todo: update index and call setIndex
+      if (this._index > 0) {
+        this.setIndex(this._index-1)
+      }
     }
 
     _handleRight() {
-        // @todo: update index and call setIndex
+      if (this._index < this.items.length - 1) {
+        this.setIndex(this._index+1)
+      }
     }
 
     setIndex(index) {
-        /**
-         * @todo:
-         * Implement working setIndex method
-         * that stores index and position movie component to focus
-         * on selected item
-         */
+      this._index = index
+      this.tag('Movies').setSmooth('x', this._index * -220)
     }
 
     set label(v) {
-        // @todo: update list title
+        this.tag('Label').patch({
+          text: {
+            text: v,
+          }
+        })
     }
 
     set movies(v) {
-        // we add an array of object with type: Item
-        // this.tag("Levels").children = v.map((el, idx)=>{
-        //     return {
-        //         type: Item
-        //     };
-        // });
+      // we add an array of object with type: Item
+      this.tag("Movies").children = v.map((el, idx)=>{
+        const movieItem = this.stage.c({
+          x: idx * 220,
+          w: 200,
+          type: Item,
+        })
+        movieItem.item = el
+        return movieItem
+      });
     }
 
     get items() {
-        return this.tag("Levels").children;
+      return this.tag("Movies").children;
     }
 
     get activeItem() {
-        // @todo: return selected item
+        return this.items[this._index]
     }
 
     _getFocused() {
-        // @todo:
-        // return activeItem
+        return this.activeItem
     }
 }
